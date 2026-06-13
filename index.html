@@ -40,15 +40,15 @@
     import { getFirestore, doc, setDoc, onSnapshot } from 'firebase/firestore';
 
     // ★★★ Vercelでクラウド共有を使う場合は、ここにFirebaseの設定を貼り付けます ★★★
-    const myFirebaseConfig = {
-      // apiKey: "YOUR_API_KEY",
-      // authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      // projectId: "YOUR_PROJECT_ID",
-      // storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      // messagingSenderId: "YOUR_SENDER_ID",
-      // appId: "YOUR_APP_ID"
-    };
-
+    const firebaseConfig = {
+    apiKey: "AIzaSyDN1kO3-7NDLxk49KV3h6pxZEFD0mOtH6A",
+    authDomain: "saku-vaccination.firebaseapp.com",
+    projectId: "saku-vaccination",
+    storageBucket: "saku-vaccination.firebasestorage.app",
+    messagingSenderId: "431776011103",
+    appId: "1:431776011103:web:25f08750dafd1204055cea",
+    measurementId: "G-F5TMJX7072"
+  };
     let app, auth, db, appId = 'vaccine-schedule-app';
     
     try {
