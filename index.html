@@ -1,0 +1,578 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.3">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="ja"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;ほぱにき 格ゲー上達ノート&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* 勝敗ボタンの選択状態のスタイル */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>input[type="radio"]:checked + label.win-btn {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: #3b82f6; /* blue-500 */</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-color: #3b82f6;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>input[type="radio"]:checked + label.lose-btn {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: #ef4444; /* red-500 */</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-color: #ef4444;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* ダークモード時のスクロールバーの微調整 */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>::-webkit-scrollbar {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 8px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>::-webkit-scrollbar-track {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: #1e293b;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>::-webkit-scrollbar-thumb {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: #475569;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>::-webkit-scrollbar-thumb:hover {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: #64748b;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>/* ふわっと表示するアニメーション */</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.fade-in {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>animation: fadeIn 0.3s ease-in-out;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>@keyframes fadeIn {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>from { opacity: 0; transform: translateY(-5px); }</p>
+<p class="p1"><span class="Apple-converted-space">            </span>to { opacity: 1; transform: translateY(0); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body class="bg-slate-900 text-slate-200 font-sans min-h-screen pb-12"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- ヘッダー --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;header class="bg-indigo-900 text-white p-4 shadow-md border-b border-indigo-800"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="max-w-2xl mx-auto flex justify-between items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h1 class="text-xl font-bold tracking-wider"&gt;ほぱにき 格ゲー上達ノート&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/header&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- メインコンテンツ --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;main class="max-w-2xl mx-auto mt-6 px-4"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- タブナビゲーション --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="flex bg-slate-800 rounded-lg shadow-sm overflow-hidden mb-6 border border-slate-700"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button id="tab-match" class="flex-1 py-3 text-center font-medium bg-indigo-900/50 text-indigo-300 transition-colors"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>対戦記録</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;button id="tab-report" class="flex-1 py-3 text-center font-medium text-slate-400 hover:bg-slate-700 transition-colors border-l border-slate-700"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>練習日報</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- ========================================== --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- 対戦記録モード --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- ========================================== --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="content-match"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;!-- 入力フォーム --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="bg-slate-800 rounded-xl shadow-sm p-5 mb-6 border border-slate-700 relative"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-lg font-bold mb-4 border-b border-slate-700 pb-2 text-white"&gt;対戦結果を入力&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;form id="match-form"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;label class="block text-sm font-medium text-slate-300 mb-1"&gt;自分のキャラクター&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;select id="match-my-character" required class="w-full p-2 bg-slate-900 text-white border border-slate-600 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;option value=""&gt;選択してください&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;label class="block text-sm font-medium text-slate-300 mb-1"&gt;対戦相手のキャラクター&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;select id="match-character" required class="w-full p-2 bg-slate-900 text-white border border-slate-600 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;option value=""&gt;選択してください&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;!-- 💡 カンニングペーパーエリア (非表示からスタート) --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div id="cheat-sheet-area" class="hidden mb-4 p-4 bg-indigo-950/40 border border-indigo-500/30 rounded-lg fade-in"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;h3 class="text-indigo-300 text-sm font-bold mb-2 flex items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;svg class="w-4 h-4 mr-1 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"&gt;&lt;/path&gt;&lt;/svg&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>このキャラの過去の対策メモ</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;ul id="cheat-sheet-list" class="list-disc list-inside text-sm text-slate-300 space-y-1"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;!-- ここにメモが入る --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/ul&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;label class="block text-sm font-medium text-slate-300 mb-1"&gt;勝敗&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="flex gap-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="flex-1 relative"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;input type="radio" name="match-result" id="result-win" value="win" required class="sr-only"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;label for="result-win" class="win-btn block w-full text-center py-2 border-2 border-slate-600 rounded-lg cursor-pointer font-bold text-slate-300 transition-colors hover:bg-slate-700"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>勝ち</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="flex-1 relative"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;input type="radio" name="match-result" id="result-lose" value="lose" required class="sr-only"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;label for="result-lose" class="lose-btn block w-full text-center py-2 border-2 border-slate-600 rounded-lg cursor-pointer font-bold text-slate-300 transition-colors hover:bg-slate-700"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>負け</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;label class="block text-sm font-medium text-slate-300 mb-1"&gt;リプレイID (任意)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;input type="text" id="match-replay-id" class="w-full p-2 bg-slate-900 text-white placeholder-slate-500 border border-slate-600 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="例: ABCD12345"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;label class="block text-sm font-medium text-slate-300 mb-1"&gt;メモ (反省点や対策など)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;textarea id="match-memo" rows="2" class="w-full p-2 bg-slate-900 text-white placeholder-slate-500 border border-slate-600 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="例: 対空が出なかった、起き攻めが通った"&gt;&lt;/textarea&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                        </span></p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;!-- 💡 ワンタップタグ機能 --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="mt-2 flex flex-wrap gap-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button type="button" class="tag-btn text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 py-1.5 px-3 rounded-full transition-colors border border-slate-600" data-tag="対空ミス"&gt;対空ミス&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button type="button" class="tag-btn text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 py-1.5 px-3 rounded-full transition-colors border border-slate-600" data-tag="インパクト被弾"&gt;インパクト被弾&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button type="button" class="tag-btn text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 py-1.5 px-3 rounded-full transition-colors border border-slate-600" data-tag="起き攻め成功"&gt;起き攻め成功&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button type="button" class="tag-btn text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 py-1.5 px-3 rounded-full transition-colors border border-slate-600" data-tag="暴れ潰し"&gt;暴れ潰し&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button type="button" class="tag-btn text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 py-1.5 px-3 rounded-full transition-colors border border-slate-600" data-tag="SA忘れ"&gt;SA忘れ&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;button type="button" class="tag-btn text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 py-1.5 px-3 rounded-full transition-colors border border-slate-600" data-tag="ライン下げすぎ"&gt;ライン下げすぎ&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-lg transition-colors shadow-lg"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>記録を保存</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/form&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;!-- キャラクター別勝率テーブル --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="bg-slate-800 rounded-xl shadow-sm p-5 border border-slate-700 overflow-hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-lg font-bold mb-4 border-b border-slate-700 pb-2 text-white"&gt;キャラクター別勝率&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="overflow-x-auto"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;table class="w-full text-sm text-left"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;thead class="text-xs text-slate-400 bg-slate-700 uppercase"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th class="px-4 py-3 rounded-tl-lg"&gt;自キャラ&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th class="px-4 py-3"&gt;相手キャラ&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th class="px-4 py-3 text-right"&gt;対戦数&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th class="px-4 py-3 text-right"&gt;勝数&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th class="px-4 py-3 text-right rounded-tr-lg"&gt;勝率&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;tbody id="stats-table-body" class="divide-y divide-slate-700"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;!-- ここにデータが動的に挿入されます --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/table&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div id="no-match-data" class="text-center text-slate-400 py-6 hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>まだ対戦記録がありません。</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;!-- 最近の対戦ログ --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="bg-slate-800 rounded-xl shadow-sm p-5 border border-slate-700 mt-6 relative"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex justify-between items-center border-b border-slate-700 pb-2 mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h2 class="text-lg font-bold text-white"&gt;最近の対戦ログ&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;!-- 💡 調子メーター --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div id="trend-meter" class="flex items-center gap-2"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div id="match-history-list" class="space-y-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;!-- ここにデータが動的に挿入されます --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- ========================================== --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- 練習日報モード --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- ========================================== --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="content-report" class="hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;!-- 入力フォーム --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="bg-slate-800 rounded-xl shadow-sm p-5 mb-6 border border-slate-700"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-lg font-bold mb-4 border-b border-slate-700 pb-2 text-white"&gt;今日の練習を記録&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;form id="report-form"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;label class="block text-sm font-medium text-slate-300 mb-1"&gt;練習時間 (分)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;input type="number" id="report-time" required min="5" step="5" class="w-full p-2 bg-slate-900 text-white placeholder-slate-500 border border-slate-600 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500" placeholder="例: 60"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;label class="block text-sm font-medium text-slate-300 mb-1"&gt;今日意識したポイント・成果&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;textarea id="report-focus" required rows="3" class="w-full p-2 bg-slate-900 text-white placeholder-slate-500 border border-slate-600 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500" placeholder="例: トレモでコンボの成功率を上げた。実戦で対空を意識した。"&gt;&lt;/textarea&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;!-- 💡 動画スクラップ機能 --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="mb-5"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;label class="block text-sm font-medium text-slate-300 mb-1"&gt;参考動画URL (任意)&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;input type="url" id="report-url" class="w-full p-2 bg-slate-900 text-white placeholder-slate-500 border border-slate-600 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-teal-500" placeholder="https://youtube.com/..."&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button type="submit" class="w-full bg-teal-600 hover:bg-teal-500 text-white font-bold py-3 rounded-lg transition-colors shadow-lg"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>日報を保存</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/form&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;!-- 日報リスト --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="bg-slate-800 rounded-xl shadow-sm p-5 border border-slate-700"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-lg font-bold mb-4 border-b border-slate-700 pb-2 text-white"&gt;過去の練習日報&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div id="report-list" class="space-y-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;!-- ここにデータが動的に挿入されます --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div id="no-report-data" class="text-center text-slate-400 py-6 hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>まだ日報がありません。</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/main&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 状態管理 (データの初期化と読み込み)</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let matches = JSON.parse(localStorage.getItem('fg_matches')) || [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let reports = JSON.parse(localStorage.getItem('fg_reports')) || [];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// DOM要素の取得</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const tabMatch = document.getElementById('tab-match');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const tabReport = document.getElementById('tab-report');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const contentMatch = document.getElementById('content-match');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const contentReport = document.getElementById('content-report');</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const matchForm = document.getElementById('match-form');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const reportForm = document.getElementById('report-form');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// キャラクターリストの生成</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const characters = [</p>
+<p class="p1"><span class="Apple-converted-space">            </span>"C リュウ", "M リュウ", "C ケン", "M ケン", "C 春麗", "M 春麗", "C ガイル", "M ガイル",<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>"C ブランカ", "M ブランカ", "C ダルシム", "M ダルシム", "C エドモンド本田", "M エドモンド本田",<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>"C ザンギエフ", "M ザンギエフ", "C キャミィ", "M キャミィ", "C ジュリ", "M ジュリ",<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>"C ルーク", "M ルーク", "C ジェイミー", "M ジェイミー", "C キンバリー", "M キンバリー",<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>"C マノン", "M マノン", "C マリーザ", "M マリーザ", "C JP", "M JP", "C リリー", "M リリー",<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>"C ディージェイ", "M ディージェイ", "C ラシード", "M ラシード", "C A.K.I.", "M A.K.I.",<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>"C エド", "M エド", "C 豪鬼", "M 豪鬼", "C ベガ", "M ベガ", "C テリー", "M テリー",<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>"C 舞", "M 舞", "C エレナ", "M エレナ", "C サガット", "M サガット", "C C.ヴァイパー", "M C.ヴァイパー",<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>"C アレックス", "M アレックス", "C イングリッド", "M イングリッド", "その他"</p>
+<p class="p1"><span class="Apple-converted-space">        </span>];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const myCharSelect = document.getElementById('match-my-character');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const oppCharSelect = document.getElementById('match-character');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>characters.forEach(char =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>myCharSelect.add(new Option(char, char));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>oppCharSelect.add(new Option(char, char));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// タブ切り替えロジック</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function switchTab(tabId) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (tabId === 'match') {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>contentMatch.classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>contentReport.classList.add('hidden');</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>tabMatch.classList.add('bg-indigo-900/50', 'text-indigo-300');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>tabMatch.classList.remove('text-slate-400', 'hover:bg-slate-700');</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>tabReport.classList.remove('bg-indigo-900/50', 'text-indigo-300');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>tabReport.classList.add('text-slate-400', 'hover:bg-slate-700');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>contentMatch.classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>contentReport.classList.remove('hidden');</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>tabReport.classList.add('bg-indigo-900/50', 'text-indigo-300');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>tabReport.classList.remove('text-slate-400', 'hover:bg-slate-700');</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>tabMatch.classList.remove('bg-indigo-900/50', 'text-indigo-300');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>tabMatch.classList.add('text-slate-400', 'hover:bg-slate-700');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>tabMatch.addEventListener('click', () =&gt; switchTab('match'));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>tabReport.addEventListener('click', () =&gt; switchTab('report'));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 💡 1. カンニングペーパー機能</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>oppCharSelect.addEventListener('change', (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const selectedChar = e.target.value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const cheatSheetArea = document.getElementById('cheat-sheet-area');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const cheatSheetList = document.getElementById('cheat-sheet-list');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (!selectedChar) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>cheatSheetArea.classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// この相手キャラで、メモが入力されている過去の対戦を抽出</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const relevantMatches = matches.filter(m =&gt; m.character === selectedChar &amp;&amp; m.memo &amp;&amp; m.memo.trim() !== '');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (relevantMatches.length &gt; 0) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>// 最新の3件を取得</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const recentMemos = [...relevantMatches].reverse().slice(0, 3);</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>cheatSheetList.innerHTML = recentMemos.map(m =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const resultBadge = m.result === 'win'<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                        </span>? '&lt;span class="text-[10px] bg-blue-900 text-blue-300 px-1 rounded ml-1 border border-blue-700"&gt;勝ち&lt;/span&gt;'</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>: '&lt;span class="text-[10px] bg-red-900 text-red-300 px-1 rounded ml-1 border border-red-700"&gt;負け&lt;/span&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>return `&lt;li class="py-0.5"&gt;${m.memo} ${resultBadge}&lt;/li&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}).join('');</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>cheatSheetArea.classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>cheatSheetArea.classList.add('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 💡 2. ワンタップタグ機能</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.querySelectorAll('.tag-btn').forEach(btn =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>btn.addEventListener('click', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const memoInput = document.getElementById('match-memo');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const tag = btn.getAttribute('data-tag');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>// メモ欄が空でなければスペースを空けてからタグを追加</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const prefix = memoInput.value &amp;&amp; !memoInput.value.endsWith(' ') ? ' ' : '';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>memoInput.value += prefix + '#' + tag + ' ';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>memoInput.focus();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 対戦記録モードの処理</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>matchForm.addEventListener('submit', (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>e.preventDefault();</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const myCharacter = document.getElementById('match-my-character').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const character = document.getElementById('match-character').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const result = document.querySelector('input[name="match-result"]:checked').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const replayId = document.getElementById('match-replay-id').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const memo = document.getElementById('match-memo').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const date = new Date().toISOString();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const newMatch = { id: Date.now(), date, myCharacter, character, result, replayId, memo };</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>matches.push(newMatch);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>localStorage.setItem('fg_matches', JSON.stringify(matches));</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// フォームリセット</p>
+<p class="p1"><span class="Apple-converted-space">            </span>matchForm.reset();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('cheat-sheet-area').classList.add('hidden'); // カンニングペーパーも隠す</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// 画面更新</p>
+<p class="p1"><span class="Apple-converted-space">            </span>renderStats();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>renderMatchHistory();</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// 一時的なポップアップ通知</p>
+<p class="p1"><span class="Apple-converted-space">            </span>showToast('対戦記録を保存しました！');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function renderStats() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const tbody = document.getElementById('stats-table-body');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const noDataMsg = document.getElementById('no-match-data');</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (matches.length === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>tbody.innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>noDataMsg.classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>noDataMsg.classList.add('hidden');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const stats = {};</p>
+<p class="p1"><span class="Apple-converted-space">            </span>matches.forEach(m =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const myChar = m.myCharacter || '未設定';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const oppChar = m.character;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const key = `${myChar}_${oppChar}`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (!stats[key]) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>stats[key] = { myChar, oppChar, play: 0, win: 0 };</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>stats[key].play++;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (m.result === 'win') stats[key].win++;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const statsArray = Object.values(stats).map(data =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const winRate = Math.round((data.win / data.play) * 100);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return { ...data, winRate };</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}).sort((a, b) =&gt; b.play - a.play);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>tbody.innerHTML = statsArray.map(stat =&gt; `</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;tr class="hover:bg-slate-700 transition-colors"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;td class="px-4 py-3 font-medium text-slate-200"&gt;${stat.myChar}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;td class="px-4 py-3 font-medium text-white"&gt;${stat.oppChar}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;td class="px-4 py-3 text-right"&gt;${stat.play}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;td class="px-4 py-3 text-right text-blue-400"&gt;${stat.win}&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;td class="px-4 py-3 text-right font-bold ${stat.winRate &gt;= 50 ? 'text-green-400' : 'text-red-400'}"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>${stat.winRate}%</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/td&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>`).join('');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function renderMatchHistory() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const list = document.getElementById('match-history-list');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const trendMeter = document.getElementById('trend-meter');</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (matches.length === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>list.innerHTML = '&lt;div class="text-center text-slate-400 py-4"&gt;まだ対戦記録がありません。&lt;/div&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>trendMeter.innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// 最新の10件</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const recentMatches = [...matches].reverse().slice(0, 10);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// 💡 3. 調子メーターの描画</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const winCount = recentMatches.filter(m =&gt; m.result === 'win').length;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const trendWinRate = Math.round((winCount / recentMatches.length) * 100);</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// 丸いドットを生成 (古い試合が左、新しい試合が右になるように並べる)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const dotsHtml = [...recentMatches].reverse().map(m =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return m.result === 'win'<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>? '&lt;span class="w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_5px_rgba(59,130,246,0.6)]" title="WIN"&gt;&lt;/span&gt;'</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>: '&lt;span class="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_5px_rgba(239,68,68,0.6)]" title="LOSE"&gt;&lt;/span&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}).join('');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>trendMeter.innerHTML = `</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;span class="text-xs font-bold text-slate-400 tracking-wider"&gt;直近: ${trendWinRate}%&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex gap-1 ml-2 bg-slate-900/50 py-1 px-2 rounded-full border border-slate-700"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>${dotsHtml}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// リスト描画</p>
+<p class="p1"><span class="Apple-converted-space">            </span>list.innerHTML = recentMatches.map(m =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const d = new Date(m.date);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const dateStr = `${d.getFullYear()}/${(d.getMonth()+1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')}`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const isWin = m.result === 'win';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const resultText = isWin ? 'WIN' : 'LOSE';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const resultColor = isWin ? 'bg-blue-900/50 text-blue-300 border border-blue-800' : 'bg-red-900/50 text-red-300 border border-red-800';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const replayBadge = m.replayId ? `&lt;span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded ml-2 font-mono"&gt;ID: ${m.replayId}&lt;/span&gt;` : '';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const memoText = m.memo ? `&lt;p class="text-sm text-slate-300 mt-2 whitespace-pre-wrap"&gt;${m.memo}&lt;/p&gt;` : '';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>return `</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="bg-slate-700/50 p-3 rounded-lg border border-slate-600"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="flex justify-between items-center mb-1"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="flex items-center flex-wrap gap-y-1"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span class="text-xs font-bold ${resultColor} px-2 py-1 rounded-sm mr-2"&gt;${resultText}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span class="text-sm font-medium text-slate-200"&gt;${m.myCharacter || '未設定'} &lt;span class="text-slate-500 mx-1"&gt;vs&lt;/span&gt; ${m.character}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>${replayBadge}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span class="text-xs text-slate-400 shrink-0 ml-2"&gt;${dateStr}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>${memoText}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}).join('');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 練習日報モードの処理</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>reportForm.addEventListener('submit', (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>e.preventDefault();</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const time = document.getElementById('report-time').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const focus = document.getElementById('report-focus').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const url = document.getElementById('report-url').value; // 動画URLを取得</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const date = new Date().toISOString();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const newReport = { id: Date.now(), date, time, focus, url };</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>reports.unshift(newReport);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>localStorage.setItem('fg_reports', JSON.stringify(reports));</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>reportForm.reset();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>renderReports();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>showToast('練習日報を保存しました！');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function renderReports() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const list = document.getElementById('report-list');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const noDataMsg = document.getElementById('no-report-data');</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (reports.length === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>list.innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>noDataMsg.classList.remove('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>noDataMsg.classList.add('hidden');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>list.innerHTML = reports.map(report =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const d = new Date(report.date);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const dateStr = `${d.getFullYear()}/${(d.getMonth()+1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')}`;</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>// 💡 4. 動画スクラップのリンク生成</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const urlLink = report.url ? `</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="mt-3 pt-3 border-t border-slate-600/50"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;a href="${report.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-xs font-medium text-teal-400 hover:text-teal-300 bg-teal-900/20 py-1 px-2 rounded transition-colors"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"&gt;&lt;/path&gt;&lt;path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"&gt;&lt;/path&gt;&lt;/svg&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>参考動画を見る</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/a&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>` : '';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>return `</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="bg-slate-700/50 p-4 rounded-lg border border-slate-600"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="flex justify-between items-center mb-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span class="text-sm font-bold text-slate-400"&gt;${dateStr}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span class="text-xs bg-teal-900/50 text-teal-300 border border-teal-800 px-2 py-1 rounded-full font-medium"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>${report.time}分</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p class="text-sm text-slate-200 whitespace-pre-wrap"&gt;${report.focus}&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>${urlLink}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}).join('');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 共通機能</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 簡易トースト通知 (画面上部にフワッと出るやつ)</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function showToast(message) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const toast = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>toast.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-indigo-600 text-white px-6 py-3 rounded-full shadow-xl font-bold z-50 fade-in';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>toast.textContent = message;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.body.appendChild(toast);</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>setTimeout(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>toast.style.opacity = '0';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>toast.style.transition = 'opacity 0.5s ease';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>setTimeout(() =&gt; toast.remove(), 500);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}, 2000);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// 初期化実行</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ==========================================</p>
+<p class="p1"><span class="Apple-converted-space">        </span>renderStats();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>renderMatchHistory();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>renderReports();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+<p class="p2"><br></p>
+</body>
+</html>
