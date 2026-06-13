@@ -5,13 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>予防接種スケジュール</title>
   
-  <!-- Tailwind CSSの読み込み -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Babelの読み込み（ブラウザでReactを動かすため） -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   
-  <!-- モジュールのインポート設定 -->
   <script type="importmap">
     {
       "imports": {
@@ -28,38 +24,38 @@
 <body>
   <div id="root"></div>
 
-  <!-- Reactアプリケーションのコード -->
   <script type="text/babel" data-type="module">
     import React, { useState, useEffect } from 'react';
     import { createRoot } from 'react-dom/client';
     import { Calendar, CheckSquare, Square, AlertCircle, Info, Users, Copy, Check, ArrowRight, Baby } from 'lucide-react';
 
-    // Firebaseの初期化（クラウド保存用）
     import { initializeApp } from 'firebase/app';
     import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
     import { getFirestore, doc, setDoc, onSnapshot } from 'firebase/firestore';
 
-    // ★★★ Vercelでクラウド共有を使う場合は、ここにFirebaseの設定を貼り付けます ★★★
-    const firebaseConfig = {
-  apiKey: "AIzaSyDN1kO3-7NDLxk49KV3h6pxZEFD0mOtH6A",
-  authDomain: "saku-vaccination.firebaseapp.com",
-  projectId: "saku-vaccination",
-  storageBucket: "saku-vaccination.firebasestorage.app",
-  messagingSenderId: "431776011103",
-  appId: "1:431776011103:web:25f08750dafd1204055cea",
-  measurementId: "G-F5TMJX7072"
-};
+    // ★★★ ここにご自身のFirebaseの設定を貼り付けてください ★★★
+    const myFirebaseConfig = {
+      // apiKey: "YOUR_API_KEY",
+      // authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      // projectId: "YOUR_PROJECT_ID",
+      // storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      // messagingSenderId: "YOUR_SENDER_ID",
+      // appId: "YOUR_APP_ID",
+      // measurementId: "G-XXXXXXX"
+    };
+
     let app, auth, db, appId = 'vaccine-schedule-app';
     
     try {
-      if (typeof __firebase_config !== 'undefined') {
-        // AIプレビュー環境用の設定
+      // Vercel等での本番環境用設定を優先して読み込むように修正
+      if (Object.keys(myFirebaseConfig).length > 0 && myFirebaseConfig.apiKey) {
+        app = initializeApp(myFirebaseConfig);
+        console.log("Firebase initialized with myFirebaseConfig");
+      } else if (typeof __firebase_config !== 'undefined') {
         const firebaseConfig = JSON.parse(__firebase_config);
         app = initializeApp(firebaseConfig);
         appId = typeof __app_id !== 'undefined' ? __app_id : appId;
-      } else if (Object.keys(myFirebaseConfig).length > 0) {
-        // Vercel本番環境用の設定
-        app = initializeApp(myFirebaseConfig);
+        console.log("Firebase initialized with AI preview config");
       }
 
       if (app) {
@@ -70,7 +66,6 @@
       console.error("Firebase initialization error:", error);
     }
 
-    // 初期データの設定
     const initialProfile = {
       name: '朔玖',
       birthDate: '2026-04-01'
@@ -134,7 +129,6 @@
       },
     ];
 
-    // 月齢・生後日数の計算ロジック
     const getAgeText = (birthStr, targetStr) => {
       if (!birthStr || !targetStr) return '';
       const birth = new Date(birthStr);
@@ -173,37 +167,51 @@
       const [inputCode, setInputCode] = useState(''); 
       const [isCopied, setIsCopied] = useState(false);
       const [showShareMenu, setShowShareMenu] = useState(false);
-      const [isLoading, setIsLoading] = useState(!!auth); // Authがあればローディング
+      
+      // 接続状態をより明確に管理
+      const [connectionStatus, setConnectionStatus] = useState('connecting'); // 'connecting', 'online', 'offline'
 
-      // 1. Firebase 認証の初期化
       useEffect(() => {
-        if (!auth) return;
+        if (!auth) {
+          setConnectionStatus('offline');
+          return;
+        }
+
         const initAuth = async () => {
           try {
             if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
               await signInWithCustomToken(auth, __initial_auth_token);
+              console.log("Signed in with custom token");
             } else {
               await signInAnonymously(auth);
+              console.log("Signed in anonymously");
             }
           } catch (error) {
             console.error("Auth error:", error);
+            setConnectionStatus('offline');
           }
         };
         initAuth();
 
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+          console.log("Auth state changed:", currentUser ? currentUser.uid : "No user");
           setUser(currentUser);
-          if (currentUser && !shareCode) {
-            setShareCode(currentUser.uid);
+          if (currentUser) {
+            setConnectionStatus('online');
+            if (!shareCode) {
+              setShareCode(currentUser.uid);
+            }
+          } else {
+             setConnectionStatus('offline');
           }
         });
         return () => unsubscribe();
       }, []);
 
-      // 2. クラウドデータとの同期
       useEffect(() => {
-        if (!user || !shareCode || !db) return;
-        setIsLoading(true);
+        if (connectionStatus !== 'online' || !user || !shareCode || !db) return;
+        
+        // データパスを環境のセキュリティルールに従うように修正
         const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'schedules', shareCode);
         
         const unsubscribe = onSnapshot(docRef, (docSnap) => {
@@ -212,20 +220,20 @@
             if (data.profile) setProfile(data.profile);
             if (data.todos) setTodos(data.todos);
             if (data.vaccines) setVaccines(data.vaccines);
+            console.log("Data loaded from cloud");
           } else if (shareCode === user.uid) {
+            console.log("Creating initial data in cloud");
             setDoc(docRef, { profile: initialProfile, todos: initialTodos, vaccines: initialVaccines }, { merge: true });
           }
-          setIsLoading(false);
         }, (error) => {
           console.error("Firestore sync error:", error);
-          setIsLoading(false);
+          setConnectionStatus('offline');
         });
         return () => unsubscribe();
-      }, [user, shareCode]);
+      }, [user, shareCode, connectionStatus]);
 
-      // クラウドへのデータ保存
       const saveToCloud = async (newProfile, newTodos, newVaccines) => {
-        if (!user || !shareCode || !db) return;
+        if (connectionStatus !== 'online' || !user || !shareCode || !db) return;
         try {
           const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'schedules', shareCode);
           await setDoc(docRef, { 
@@ -316,11 +324,13 @@
                     <Calendar className="w-6 h-6 text-blue-500" />
                     予防接種スケジュール
                   </h1>
-                  <p className="text-sm text-slate-500 mt-2">
-                    {auth ? "自動保存オン・家族とリアルタイム同期可能" : "クラウド機能は現在オフラインです"}
+                  <p className="text-sm text-slate-500 mt-2 flex items-center gap-2">
+                    {connectionStatus === 'online' && <span className="flex items-center text-green-600"><Check className="w-4 h-4 mr-1"/>オンライン・自動保存オン</span>}
+                    {connectionStatus === 'connecting' && <span className="flex items-center text-blue-600">クラウドに接続中...</span>}
+                    {connectionStatus === 'offline' && <span className="flex items-center text-orange-600"><AlertCircle className="w-4 h-4 mr-1"/>クラウド機能はオフラインです</span>}
                   </p>
                 </div>
-                {auth && (
+                {connectionStatus === 'online' && (
                   <button 
                     onClick={() => setShowShareMenu(!showShareMenu)}
                     className={`p-2 rounded-full transition-colors ${showShareMenu ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
@@ -411,7 +421,7 @@
               )}
             </header>
 
-            {isLoading && auth ? (
+            {connectionStatus === 'connecting' ? (
               <div className="flex justify-center p-10 text-slate-400">
                 データを読み込み中...
               </div>
@@ -503,7 +513,6 @@
       );
     }
 
-    // Reactアプリのマウント
     const root = createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
