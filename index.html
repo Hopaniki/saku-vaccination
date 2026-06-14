@@ -34,8 +34,7 @@
     import { getFirestore, doc, setDoc, onSnapshot } from 'firebase/firestore';
 
     // ★★★ ここにご自身のFirebaseの設定を貼り付けてください ★★★
-    const myFirebaseConfig = {
-      const firebaseConfig = {
+    const firebaseConfig = {
   apiKey: "AIzaSyDN1kO3-7NDLxk49KV3h6pxZEFD0mOtH6A",
   authDomain: "saku-vaccination.firebaseapp.com",
   projectId: "saku-vaccination",
@@ -48,15 +47,14 @@
     let app, auth, db, appId = 'vaccine-schedule-app';
     
     try {
-      // Vercel等での本番環境用設定を優先して読み込むように修正
-      if (Object.keys(myFirebaseConfig).length > 0 && myFirebaseConfig.apiKey) {
-        app = initializeApp(myFirebaseConfig);
-        console.log("Firebase initialized with myFirebaseConfig");
-      } else if (typeof __firebase_config !== 'undefined') {
+      if (typeof __firebase_config !== 'undefined') {
         const firebaseConfig = JSON.parse(__firebase_config);
         app = initializeApp(firebaseConfig);
         appId = typeof __app_id !== 'undefined' ? __app_id : appId;
-        console.log("Firebase initialized with AI preview config");
+        console.log("Firebase initialized (Preview Mode)");
+      } else if (Object.keys(myFirebaseConfig).length > 0 && myFirebaseConfig.apiKey) {
+        app = initializeApp(myFirebaseConfig);
+        console.log("Firebase initialized (Vercel Mode)");
       }
 
       if (app) {
@@ -169,8 +167,7 @@
       const [isCopied, setIsCopied] = useState(false);
       const [showShareMenu, setShowShareMenu] = useState(false);
       
-      // 接続状態をより明確に管理
-      const [connectionStatus, setConnectionStatus] = useState('connecting'); // 'connecting', 'online', 'offline'
+      const [connectionStatus, setConnectionStatus] = useState('connecting');
 
       useEffect(() => {
         if (!auth) {
@@ -182,10 +179,8 @@
           try {
             if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
               await signInWithCustomToken(auth, __initial_auth_token);
-              console.log("Signed in with custom token");
             } else {
               await signInAnonymously(auth);
-              console.log("Signed in anonymously");
             }
           } catch (error) {
             console.error("Auth error:", error);
@@ -195,7 +190,6 @@
         initAuth();
 
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-          console.log("Auth state changed:", currentUser ? currentUser.uid : "No user");
           setUser(currentUser);
           if (currentUser) {
             setConnectionStatus('online');
@@ -212,7 +206,7 @@
       useEffect(() => {
         if (connectionStatus !== 'online' || !user || !shareCode || !db) return;
         
-        // データパスを環境のセキュリティルールに従うように修正
+        // 正しいデータパスに修正
         const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'schedules', shareCode);
         
         const unsubscribe = onSnapshot(docRef, (docSnap) => {
@@ -221,9 +215,7 @@
             if (data.profile) setProfile(data.profile);
             if (data.todos) setTodos(data.todos);
             if (data.vaccines) setVaccines(data.vaccines);
-            console.log("Data loaded from cloud");
           } else if (shareCode === user.uid) {
-            console.log("Creating initial data in cloud");
             setDoc(docRef, { profile: initialProfile, todos: initialTodos, vaccines: initialVaccines }, { merge: true });
           }
         }, (error) => {
@@ -236,6 +228,7 @@
       const saveToCloud = async (newProfile, newTodos, newVaccines) => {
         if (connectionStatus !== 'online' || !user || !shareCode || !db) return;
         try {
+          // 正しいデータパスに修正
           const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'schedules', shareCode);
           await setDoc(docRef, { 
             profile: newProfile || profile,
