@@ -45,12 +45,14 @@
 };
 
     let app, auth, db, appId = 'vaccine-schedule-app';
+    let isPreviewEnv = false;
     
     try {
       if (typeof __firebase_config !== 'undefined') {
         const firebaseConfig = JSON.parse(__firebase_config);
         app = initializeApp(firebaseConfig);
         appId = typeof __app_id !== 'undefined' ? __app_id : appId;
+        isPreviewEnv = true;
         console.log("Firebase initialized (Preview Mode)");
       } else if (Object.keys(myFirebaseConfig).length > 0 && myFirebaseConfig.apiKey) {
         app = initializeApp(myFirebaseConfig);
@@ -64,6 +66,16 @@
     } catch (error) {
       console.error("Firebase initialization error:", error);
     }
+
+    // 保存先のパスを環境に合わせて取得する関数
+    const getDocRef = (shareCode) => {
+      if (isPreviewEnv) {
+        return doc(db, 'artifacts', appId, 'public', 'data', 'schedules', shareCode);
+      } else {
+        // Vercel環境（個人のFirebase）ではシンプルに保存
+        return doc(db, 'schedules', shareCode);
+      }
+    };
 
     const initialProfile = {
       name: '朔玖',
@@ -168,10 +180,12 @@
       const [showShareMenu, setShowShareMenu] = useState(false);
       
       const [connectionStatus, setConnectionStatus] = useState('connecting');
+      const [errorMessage, setErrorMessage] = useState(''); // エラー原因表示用
 
       useEffect(() => {
         if (!auth) {
           setConnectionStatus('offline');
+          setErrorMessage('設定コードが正しく貼り付けられていない可能性があります');
           return;
         }
 
@@ -185,6 +199,7 @@
           } catch (error) {
             console.error("Auth error:", error);
             setConnectionStatus('offline');
+            setErrorMessage(`認証エラー: ${error.message}`); // エラーを表示
           }
         };
         initAuth();
@@ -193,6 +208,7 @@
           setUser(currentUser);
           if (currentUser) {
             setConnectionStatus('online');
+            setErrorMessage('');
             if (!shareCode) {
               setShareCode(currentUser.uid);
             }
@@ -206,8 +222,7 @@
       useEffect(() => {
         if (connectionStatus !== 'online' || !user || !shareCode || !db) return;
         
-        // 正しいデータパスに修正
-        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'schedules', shareCode);
+        const docRef = getDocRef(shareCode);
         
         const unsubscribe = onSnapshot(docRef, (docSnap) => {
           if (docSnap.exists()) {
@@ -216,11 +231,15 @@
             if (data.todos) setTodos(data.todos);
             if (data.vaccines) setVaccines(data.vaccines);
           } else if (shareCode === user.uid) {
-            setDoc(docRef, { profile: initialProfile, todos: initialTodos, vaccines: initialVaccines }, { merge: true });
+            setDoc(docRef, { profile: initialProfile, todos: initialTodos, vaccines: initialVaccines }, { merge: true }).catch(e => {
+              setConnectionStatus('offline');
+              setErrorMessage(`保存エラー: ${e.message}`);
+            });
           }
         }, (error) => {
           console.error("Firestore sync error:", error);
           setConnectionStatus('offline');
+          setErrorMessage(`データベースエラー: ${error.message}`); // エラーを表示
         });
         return () => unsubscribe();
       }, [user, shareCode, connectionStatus]);
@@ -228,8 +247,7 @@
       const saveToCloud = async (newProfile, newTodos, newVaccines) => {
         if (connectionStatus !== 'online' || !user || !shareCode || !db) return;
         try {
-          // 正しいデータパスに修正
-          const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'schedules', shareCode);
+          const docRef = getDocRef(shareCode);
           await setDoc(docRef, { 
             profile: newProfile || profile,
             todos: newTodos || todos, 
@@ -237,6 +255,8 @@
           }, { merge: true });
         } catch (error) {
           console.error("Save error:", error);
+          setConnectionStatus('offline');
+          setErrorMessage(`保存時エラー: ${error.message}`);
         }
       };
 
@@ -318,11 +338,19 @@
                     <Calendar className="w-6 h-6 text-blue-500" />
                     予防接種スケジュール
                   </h1>
-                  <p className="text-sm text-slate-500 mt-2 flex items-center gap-2">
-                    {connectionStatus === 'online' && <span className="flex items-center text-green-600"><Check className="w-4 h-4 mr-1"/>オンライン・自動保存オン</span>}
-                    {connectionStatus === 'connecting' && <span className="flex items-center text-blue-600">クラウドに接続中...</span>}
-                    {connectionStatus === 'offline' && <span className="flex items-center text-orange-600"><AlertCircle className="w-4 h-4 mr-1"/>クラウド機能はオフラインです</span>}
-                  </p>
+                  <div className="mt-2 space-y-1">
+                    <p className="text-sm text-slate-500 flex items-center gap-2">
+                      {connectionStatus === 'online' && <span className="flex items-center text-green-600"><Check className="w-4 h-4 mr-1"/>オンライン・自動保存オン</span>}
+                      {connectionStatus === 'connecting' && <span className="flex items-center text-blue-600">クラウドに接続中...</span>}
+                      {connectionStatus === 'offline' && <span className="flex items-center text-orange-600 font-bold"><AlertCircle className="w-4 h-4 mr-1"/>クラウド機能はオフラインです</span>}
+                    </p>
+                    {/* 追加：エラーの具体的な原因を表示 */}
+                    {errorMessage && (
+                      <p className="text-xs font-bold text-red-500 bg-red-50 p-2 rounded border border-red-200">
+                        {errorMessage}
+                      </p>
+                    )}
+                  </div>
                 </div>
                 {connectionStatus === 'online' && (
                   <button 
